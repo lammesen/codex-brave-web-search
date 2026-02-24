@@ -1,0 +1,8 @@
+/target
+/fuzz/target
+/.mcp-backups
+/fuzz/artifacts
+/corpus
+
+# Test regressions
+/tests/*.proptest-regressions

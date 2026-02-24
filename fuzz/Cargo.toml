@@ -1,0 +1,27 @@
+[package]
+name = "codex-brave-web-search-fuzz"
+version = "0.0.0"
+publish = false
+edition = "2024"
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+libfuzzer-sys = "0.4"
+serde_json = "1.0"
+codex-brave-web-search = { path = ".." }
+
+[[bin]]
+name = "parse_sections"
+path = "fuzz_targets/parse_sections.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "parse_brave_error_message"
+path = "fuzz_targets/parse_brave_error_message.rs"
+test = false
+doc = false
+bench = false

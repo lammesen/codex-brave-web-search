@@ -1,0 +1,32 @@
+---
+source: tests/snapshots.rs
+assertion_line: 92
+expression: json
+---
+{
+  "api_version": "v1",
+  "key_config": {
+    "has_key": true,
+    "source": "BRAVE_SEARCH_API_KEY"
+  },
+  "provider": "brave",
+  "server_version": "<version>",
+  "settings": {
+    "cache_ttl_secs": 300,
+    "limits": {
+      "default_max_bytes": 32768,
+      "default_max_lines": 120,
+      "max_max_bytes": 98304,
+      "max_max_lines": 300,
+      "min_max_bytes": 4096,
+      "min_max_lines": 20
+    },
+    "per_attempt_timeout_ms": 15000,
+    "retry_base_delay_ms": 250,
+    "retry_count": 3,
+    "retry_max_delay_ms": 5000,
+    "throttle_burst": 4,
+    "throttle_rate_per_sec": 2
+  },
+  "status": "ok"
+}
