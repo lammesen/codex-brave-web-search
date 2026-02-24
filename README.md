@@ -42,6 +42,15 @@ Binary:
 target/release/codex-brave-web-search
 ```
 
+## Install from crates.io (main branch publishes)
+
+Every push to `main` publishes a new pre-release version to crates.io via GitHub Actions.
+Install using the published version from the workflow summary:
+
+```bash
+cargo install codex-brave-web-search --version <published-version>
+```
+
 ## Register With Codex
 
 ### Automated (recommended)
