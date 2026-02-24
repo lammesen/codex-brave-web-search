@@ -1,6 +1,6 @@
 # codex-brave-web-search
 
-Rust MCP server that ports `pi-web_search` to Codex with full Brave web/news/images/videos coverage and Codex-first structured responses.
+Rust MCP server for Codex with full Brave web/news/images/videos coverage and Codex-first structured responses.
 
 - Server name: `brave-web-search`
 - Tools:
@@ -27,7 +27,7 @@ Rust MCP server that ports `pi-web_search` to Codex with full Brave web/news/ima
 - Per-call output overrides with bounded clamps:
   - min: 20 lines / 4KB
   - max: 300 lines / 96KB
-- URL dedup based on normalized URL strategy from the pi extension.
+- URL dedup based on normalized URL strategy for stable cross-section de-duplication.
 - Debug controls with capped raw payload output (64KB cap).
 
 ## Build
