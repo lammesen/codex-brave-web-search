@@ -15,16 +15,20 @@ concurrency:
 
 jobs:
   verify:
+    name: verify
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
       - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1
+        with:
+          toolchain: stable
 
       - name: Cache cargo
-        uses: Swatinem/rust-cache@v2
+        uses: Swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5 # v2.8.2
 
       - name: Format
         run: cargo fmt --all --check
@@ -36,21 +40,26 @@ jobs:
         run: cargo test -- --skip live_
 
   publish:
+    name: publish
     runs-on: ubuntu-latest
     needs: verify
+    timeout-minutes: 20
     permissions:
       contents: write
+      id-token: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
         with:
           fetch-depth: 0
 
       - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1
+        with:
+          toolchain: stable
 
       - name: Cache cargo
-        uses: Swatinem/rust-cache@v2
+        uses: Swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5 # v2.8.2
 
       - name: Compute CI version
         id: version
@@ -79,10 +88,12 @@ jobs:
           echo "new_version=${NEW_VERSION}" >> "${GITHUB_OUTPUT}"
           echo "Generated publish version: ${NEW_VERSION}"
 
+      - name: Authenticate to crates.io
+        id: crates_auth
+        uses: rust-lang/crates-io-auth-action@b7e9a28eded4986ec6b1fa40eeee8f8f165559ec # v1.0.3
+
       - name: Publish to crates.io
-        env:
-          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
-        run: cargo publish --allow-dirty --token "${CARGO_REGISTRY_TOKEN}"
+        run: cargo publish --allow-dirty --token "${{ steps.crates_auth.outputs.token }}"
 
       - name: Create GitHub release
         id: github_release
