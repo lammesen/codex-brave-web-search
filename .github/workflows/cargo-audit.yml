@@ -1,0 +1,96 @@
+name: Cargo Audit
+
+on:
+  schedule:
+    - cron: "41 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: cargo-audit-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    name: audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1
+        with:
+          toolchain: stable
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5 # v2.8.2
+
+      - name: Install cargo-audit
+        run: cargo install cargo-audit --locked
+
+      - name: Run cargo audit
+        id: audit
+        shell: bash
+        run: |
+          set +e
+          cargo audit --json > cargo-audit.json
+          EXIT_CODE=$?
+          if [[ "${EXIT_CODE}" -eq 0 ]]; then
+            echo "has_findings=false" >> "${GITHUB_OUTPUT}"
+          else
+            echo "has_findings=true" >> "${GITHUB_OUTPUT}"
+          fi
+          echo "exit_code=${EXIT_CODE}" >> "${GITHUB_OUTPUT}"
+          exit 0
+
+      - name: Open or update issue on findings
+        if: steps.audit.outputs.has_findings == 'true'
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7.1.0
+        with:
+          script: |
+            const fs = require("fs");
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const title = "Cargo audit found vulnerabilities";
+            const runUrl = `https://github.com/${owner}/${repo}/actions/runs/${context.runId}`;
+            const report = fs.readFileSync("cargo-audit.json", "utf8").slice(0, 12000);
+            const body = [
+              "Automated `cargo audit` found potential vulnerabilities.",
+              "",
+              `Workflow run: ${runUrl}`,
+              "",
+              "```json",
+              report,
+              "```"
+            ].join("\n");
+
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner,
+              repo,
+              state: "open",
+              labels: "cargo-audit,security",
+              per_page: 100
+            });
+
+            const existing = issues.find((issue) => issue.title === title);
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: existing.number,
+                body
+              });
+            } else {
+              await github.rest.issues.create({
+                owner,
+                repo,
+                title,
+                body,
+                labels: ["cargo-audit", "security"]
+              });
+            }

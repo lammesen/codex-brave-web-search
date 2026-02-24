@@ -1,0 +1,5 @@
+* @lammesen
+/.github/CODEOWNERS @lammesen
+/.github/workflows/** @lammesen
+/.github/dependabot.yml @lammesen
+/SECURITY.md @lammesen
