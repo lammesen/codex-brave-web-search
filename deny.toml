@@ -1,0 +1,48 @@
+[graph]
+all-features = true
+
+[advisories]
+version = 2
+yanked = "deny"
+
+[licenses]
+version = 2
+allow = [
+    "MIT",
+    "Apache-2.0",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "CDLA-Permissive-2.0",
+    "ISC",
+    "Unicode-3.0",
+    "Unicode-DFS-2016",
+    "Zlib",
+]
+
+[bans]
+multiple-versions = "deny"
+wildcards = "deny"
+skip = [
+    { crate = "getrandom" },
+    { crate = "rand" },
+    { crate = "rand_chacha" },
+    { crate = "rand_core" },
+    { crate = "unicode-width" },
+    { crate = "windows-sys" },
+    { crate = "windows-targets" },
+    { crate = "windows_aarch64_gnullvm" },
+    { crate = "windows_aarch64_msvc" },
+    { crate = "windows_i686_gnu" },
+    { crate = "windows_i686_gnullvm" },
+    { crate = "windows_i686_msvc" },
+    { crate = "windows_x86_64_gnu" },
+    { crate = "windows_x86_64_gnullvm" },
+    { crate = "windows_x86_64_msvc" },
+    { crate = "wit-bindgen" },
+]
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]
+allow-git = []

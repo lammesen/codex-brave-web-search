@@ -1,0 +1,4 @@
+[workspace]
+changelog_config = "cliff.toml"
+git_release_enable = true
+semver_check = true
