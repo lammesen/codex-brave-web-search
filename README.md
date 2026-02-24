@@ -45,6 +45,8 @@ target/release/codex-brave-web-search
 ## Install from crates.io (main branch publishes)
 
 Every push to `main` publishes a new pre-release version to crates.io via GitHub Actions.
+Each successful publish also creates a GitHub pre-release entry under the repository Releases page
+with tag `v<published-version>`.
 Install using the published version from the workflow summary:
 
 ```bash
